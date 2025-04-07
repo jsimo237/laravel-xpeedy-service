@@ -1,0 +1,48 @@
+{
+    "name" : "kirago/laravel-xpeedy-service",
+    "description" : "Laravel Xpeedy package Service",
+    "keywords": [
+        "xpeedy","kirago","payment","payment service","omnipay"
+      ],
+    "homepage" : "https://github.com/jsimo237/laravel-xpeedy-service",
+    "version": "1.0",
+    "support" : {
+        "issues" : "https://github.com/jsimo237/laravel-xpeedy-service/issues"
+    },
+    "authors" : [
+        {
+            "name" : "Simo Joel",
+            "email" : "joelsimooverride@gmail.com",
+            "role": "Developper",
+            "homepage": "https://github.com/jsimo237"
+        }
+    ],
+    "license" : "MIT",
+    "require" : {
+        "php": "^7.3|^8",
+        "ext-json": "*",
+        "ext-ctype": "*",
+        "ext-filter": "*",
+        "ext-mbstring": "*",
+        "spatie/valuestore": "^1.3"
+    },
+    "require-dev": {
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload" : {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4" : {
+            "Kirago\\Xpeedy\\" : "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+              "Kirago\\Xpeedy\\ServiceProvider"
+            ]
+        }
+    }
+}
