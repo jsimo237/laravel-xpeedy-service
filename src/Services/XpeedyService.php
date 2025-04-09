@@ -4,7 +4,7 @@ namespace Kirago\Xpeedy\Services;
 
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
+use Carbon\Carbon;
 use Spatie\Valuestore\Valuestore;
 
 class XpeedyService
@@ -12,12 +12,12 @@ class XpeedyService
 
 
 
-    protected $apiKey;
-    protected $apiSecret;
-    protected $apiId;
-    protected $baseUrl;
-    protected $clientHttp;
-    protected $store;
+    protected string $apiKey;
+    protected string $apiSecret;
+    protected string $apiId;
+    protected string $baseUrl;
+    protected Client $clientHttp;
+    protected mixed $store;
 
 
     /**
@@ -142,7 +142,8 @@ class XpeedyService
     /**
      * @throws Exception
      */
-    public function request($endpoint, $options = []){
+    public function request($endpoint, $options = []): array
+    {
 //         $headers =  $options['headers'] ?? null;
         $data  = $options['data']?? null ;
 
@@ -170,8 +171,6 @@ class XpeedyService
 
             return [ $response ,$status];
         }catch (Exception $ex) {
-
-
             throw new Exception($exception, 0, $ex);
         }
     }
@@ -182,14 +181,16 @@ class XpeedyService
     public function getAccessToken(){
 
         $token = $this->store->get('access_token');
-        $expired_at = $this->store->get('expired_at');
+        $expiredAt = $this->store->get('expired_at');
 
         $expired = true ;
 
-        if (filled($expired_at)) $expired = date_is_expired($expired_at);
+        if (filled($expiredAt)) {
+            $expired = date_is_expired($expiredAt);
+        }
 
         if (blank($token) or $expired){
-            $response = $this->authenticate();
+            [$response,$status] = $this->authenticate();
 
             if (isset($response['access_token'])) {
                 $this->store->put($response);
@@ -198,11 +199,6 @@ class XpeedyService
         }
         return $token;
     }
-
-//    public function getWalletInfo(){
-//
-//    }
-
 
     /**
      * @throws Exception
@@ -226,10 +222,11 @@ class XpeedyService
         ];
         $validator =  validator($data,$rules);
         $validator->validate();
-      //  $data = $validator->validated();
+
 
         $token = $this->getAccessToken();
-       $options = [
+
+        $options = [
            "method" => "post",
            "data" => [
                "exception"=> "Echec d'initialisation de transaction",
@@ -273,8 +270,6 @@ class XpeedyService
     public function walletDetails(){
 
         $token = $this->getAccessToken();
-
-        write_log("token",$token);
 
        $options = [
            "method" => "get",
